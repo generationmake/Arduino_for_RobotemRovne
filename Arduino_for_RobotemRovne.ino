@@ -15,15 +15,15 @@ Ifx007t mot2;
 //use these defines for Arduino MKR WIFI 1010
 #define BACKLIGHTPIN A6
 #define EMERGENCYSTOP A4
-#define DIS_CS A1
-#define DIS_A0 A3
-#define DIS_RESET A2
+#define DIS_CS 6
+#define DIS_A0 0
+#define DIS_RESET 1
 #define MOT1_1 2
 #define MOT1_2 3
-#define MOT1_EN 1
+#define MOT1_EN A1
 #define MOT2_1 4
 #define MOT2_2 5
-#define MOT2_EN 0
+#define MOT2_EN A2
 
 #define OFFSET 554
 #define CUROFFSET1 112
@@ -42,7 +42,7 @@ void setup() {
    Wire.begin();
  
   Serial.begin(9600);
-  while (!Serial);             // Leonardo: wait for serial monitor
+//  while (!Serial);             // Leonardo: wait for serial monitor
   Serial.println("\nI2C Scanner");
   byte error, address;
   int nDevices;
