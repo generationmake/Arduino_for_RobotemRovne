@@ -6,6 +6,8 @@ Arduino code for Robotem Rovne
 #include "ubuntumono_b_16.h"
 #include <Wire.h>
 #include <Adafruit_ADS1X15.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
 #include "ifx007t.h"
  
 Adafruit_ADS1015 ads1015;    // Construct an ads1015 at the default address: 0x48
@@ -30,6 +32,8 @@ Ifx007t mot2;
 #define CUROFFSET2 121
 
 DogGraphicDisplay DOG;
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
+
 
 void setup() {
   pinMode(EMERGENCYSTOP,  INPUT_PULLDOWN);   // set EMERGENCYSTOP pin to input with pull down
@@ -83,6 +87,12 @@ void setup() {
  
   delay(500);           // wait 0.5 seconds for next scan
 
+  if (!bno.begin())
+  {
+    Serial.print("No BNO055 detected");
+    while (1);
+  }
+
   Serial.println("Getting single-ended readings from AIN0..3");
   Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV)");
   ads1015.begin();
@@ -97,16 +107,21 @@ void loop() {
   static int offset=DOG.display_width(); // static variable with the size of the display, so text starts at the right border
   int speed1, speed2, cur1, cur2;
 
-  DOG.string(offset,2,UBUNTUMONO_B_16,"Hello to the scrolling World!"); // print "Hello World" in line 3 at position offset
+  DOG.string(offset,2,UBUNTUMONO_B_16,"Robotem Rovne!"); // print "Hello World" in line 3 at position offset
 
   offset--; // decrasye offset so text moves to the left
-  if(offset<-232) offset=DOG.display_width(); //our text is 232 pixels wide so restart at this value
+  if(offset<-132) offset=DOG.display_width(); //our text is 232 pixels wide so restart at this value
 
   int emergencystop;
   int16_t adc0, adc1, adc2, adc3, adc;
   float vin;
     char buffer[50];
 
+  sensors_event_t orientationData , linearAccelData;
+  bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
+  Serial.print("Heading: ");
+  Serial.println(orientationData.orientation.x);
+  DOG.string(0,6,UBUNTUMONO_B_16,itoa(orientationData.orientation.x,buffer,10),ALIGN_CENTER,STYLE_FULL);
   emergencystop=digitalRead(EMERGENCYSTOP);
   adc0 = ads1015.readADC_SingleEnded(0);
   adc1 = ads1015.readADC_SingleEnded(1);
@@ -182,7 +197,7 @@ void loop() {
   Serial.print(" -*- "); Serial.print(cur1);
   Serial.print(" "); Serial.print(cur2);
   Serial.println(" ");
-  DOG.string(0,0,UBUNTUMONO_B_16,itoa(counter,buffer,10),ALIGN_CENTER);
+  DOG.string(0,0,UBUNTUMONO_B_16,itoa(counter,buffer,10),ALIGN_CENTER,STYLE_FULL);
   DOG.string(0,0,UBUNTUMONO_B_16,itoa(emergencystop,buffer,10),ALIGN_LEFT);
   DOG.string(0,0,UBUNTUMONO_B_16,itoa(vin*100,buffer,10),ALIGN_RIGHT);
   
