@@ -120,20 +120,29 @@ void loop() {
   vin=(float)adc/1024.0*3.3*16;
 
   counter++;
+  if(emergencystop==0) counter=0;
   if(counter<10)
   {
     mot1.stop();
     mot2.stop();
-    pwm=0;
+    pwm=50;
   }
   if(counter>10&&counter<256)
   {
 //    pwm++;
-    pwm+=5;
-    mot1.pwm(pwm);
-    mot2.pwm(pwm);
+    if(pwm<150) 
+    {
+      pwm+=5;
+      mot1.pwm(pwm);
+      mot2.pwm(pwm);
+    }
+    else
+    {
+      mot1.pwm(152);
+      mot2.pwm(150);
+    }
   }
-  if(counter>256&&counter<768)
+/*  if(counter>256&&counter<768)
   {
 //    pwm--;
     pwm-=5;
@@ -148,7 +157,7 @@ void loop() {
     mot2.pwm(pwm);
   }
   if(counter>1024)counter=0;
-  
+*/  
 //  delay(1000);
   delay(100);  // wait a little bit
 
