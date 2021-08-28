@@ -42,9 +42,11 @@ void setup() {
   digitalWrite(BACKLIGHTPIN,  HIGH);  // enable backlight pin
 
   DOG.begin(DIS_CS,0,0,DIS_A0,DIS_RESET,DOGM128);   //CS = 15, 0,0= use Hardware SPI, A0 = 17, RESET = 16, EA DOGM128-5 (=128x64 dots)
+  DOG.createCanvas(128, 64, 0, 0, 1);  // Canvas in buffered mode
 
   DOG.clear();  //clear whole display
    Wire.begin();
+  DOG.string(0,0,UBUNTUMONO_B_16,"Scan I2C-Bus",ALIGN_CENTER);
  
   Serial.begin(9600);
 //  while (!Serial);             // Leonardo: wait for serial monitor
@@ -88,18 +90,21 @@ void setup() {
  
   delay(500);           // wait 0.5 seconds for next scan
 
+  DOG.string(0,2,UBUNTUMONO_B_16,"Init BNO055",ALIGN_CENTER);
   if (!bno.begin())
   {
     Serial.print("No BNO055 detected");
     while (1);
   }
 
+  DOG.string(0,4,UBUNTUMONO_B_16,"Init ADS1015",ALIGN_CENTER);
   Serial.println("Getting single-ended readings from AIN0..3");
   Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV)");
   ads1015.begin();
   mot1.begin(MOT1_1,MOT1_2,MOT1_EN);
   mot2.begin(MOT2_1,MOT2_2,MOT2_EN);
 
+  DOG.clear();  //clear whole display
 }
 
 void loop() {
