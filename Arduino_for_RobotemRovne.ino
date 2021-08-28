@@ -33,6 +33,7 @@ Ifx007t mot2;
 
 DogGraphicDisplay DOG;
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
+  float heading_soll=0;
 
 
 void setup() {
@@ -106,6 +107,7 @@ void loop() {
   static int pwm=0;
   static int offset=DOG.display_width(); // static variable with the size of the display, so text starts at the right border
   int speed1, speed2, cur1, cur2;
+  float heading_offset=0;
 
   DOG.string(offset,2,UBUNTUMONO_B_16,"Robotem Rovne!"); // print "Hello World" in line 3 at position offset
 
@@ -134,15 +136,25 @@ void loop() {
   adc = analogRead(A0);
   vin=(float)adc/1024.0*3.3*16;
 
-  counter++;
-  if(emergencystop==0) counter=0;
+  if(counter<1000) counter++;
+  if(emergencystop==0) 
+  {
+    counter=0;
+    heading_soll=0;
+  }
   if(counter<10)
   {
     mot1.stop();
     mot2.stop();
     pwm=50;
+    heading_soll+=orientationData.orientation.x;
   }
-  if(counter>10&&counter<256)
+  if(counter==10) 
+  {
+    heading_soll=heading_soll/10.0;
+    DOG.string(0,4,UBUNTUMONO_B_16,itoa(heading_soll,buffer,10),ALIGN_CENTER,STYLE_FULL);
+  }
+  if(counter>10)
   {
 //    pwm++;
     if(pwm<150) 
@@ -153,8 +165,12 @@ void loop() {
     }
     else
     {
-      mot1.pwm(152);
-      mot2.pwm(150);
+      heading_offset=heading_soll-orientationData.orientation.x;
+      if(heading_offset<-360.0) heading_offset+=360.0;
+      if(heading_offset>360.0) heading_offset-=360.0;
+      DOG.string(0,4,UBUNTUMONO_B_16,itoa((heading_offset*10),buffer,10),ALIGN_LEFT);
+      mot1.pwm(152-heading_offset*2.0);
+      mot2.pwm(150+heading_offset*2.0);
     }
   }
 /*  if(counter>256&&counter<768)
