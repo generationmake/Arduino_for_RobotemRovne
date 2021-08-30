@@ -4,6 +4,7 @@ Arduino code for Robotem Rovne
 
 #include <DogGraphicDisplay.h>
 #include "ubuntumono_b_16.h"
+#include "dense_numbers_8.h"
 #include <Wire.h>
 #include <Adafruit_ADS1X15.h>
 #include <Adafruit_Sensor.h>
@@ -42,7 +43,7 @@ void setup() {
   digitalWrite(BACKLIGHTPIN,  HIGH);  // enable backlight pin
 
   DOG.begin(DIS_CS,0,0,DIS_A0,DIS_RESET,DOGM128);   //CS = 15, 0,0= use Hardware SPI, A0 = 17, RESET = 16, EA DOGM128-5 (=128x64 dots)
-  DOG.createCanvas(128, 64, 0, 0, 1);  // Canvas in buffered mode
+  DOG.createCanvas(32, 32, 0, 32, 1);  // Canvas in buffered mode
 
   DOG.clear();  //clear whole display
    Wire.begin();
@@ -114,7 +115,7 @@ void loop() {
   int speed1, speed2, cur1, cur2;
   float heading_offset=0;
 
-  DOG.string(offset,2,UBUNTUMONO_B_16,"Robotem Rovne!"); // print "Hello World" in line 3 at position offset
+  DOG.string(offset,0,UBUNTUMONO_B_16,"Robotem Rovne!"); // print "Hello World" in line 3 at position offset
 
   offset--; // decrasye offset so text moves to the left
   if(offset<-132) offset=DOG.display_width(); //our text is 232 pixels wide so restart at this value
@@ -128,7 +129,6 @@ void loop() {
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
   Serial.print("Heading: ");
   Serial.println(orientationData.orientation.x);
-  DOG.string(0,6,UBUNTUMONO_B_16,itoa(orientationData.orientation.x,buffer,10),ALIGN_CENTER,STYLE_FULL);
   emergencystop=digitalRead(EMERGENCYSTOP);
   adc0 = ads1015.readADC_SingleEnded(0);
   adc1 = ads1015.readADC_SingleEnded(1);
@@ -157,7 +157,6 @@ void loop() {
   if(counter==10) 
   {
     heading_soll=heading_soll/10.0;
-    DOG.string(0,4,UBUNTUMONO_B_16,itoa(heading_soll,buffer,10),ALIGN_CENTER,STYLE_FULL);
   }
   if(counter>10)
   {
@@ -173,7 +172,6 @@ void loop() {
       heading_offset=heading_soll-orientationData.orientation.x;
       if(heading_offset<-360.0) heading_offset+=360.0;
       if(heading_offset>360.0) heading_offset-=360.0;
-      DOG.string(0,4,UBUNTUMONO_B_16,itoa((heading_offset*10),buffer,10),ALIGN_LEFT);
       mot1.pwm(152-heading_offset*2.0);
       mot2.pwm(150+heading_offset*2.0);
     }
@@ -218,8 +216,28 @@ void loop() {
   Serial.print(" -*- "); Serial.print(cur1);
   Serial.print(" "); Serial.print(cur2);
   Serial.println(" ");
-  DOG.string(0,0,UBUNTUMONO_B_16,itoa(counter,buffer,10),ALIGN_CENTER,STYLE_FULL);
-  DOG.string(0,0,UBUNTUMONO_B_16,itoa(emergencystop,buffer,10),ALIGN_LEFT);
-  DOG.string(0,0,UBUNTUMONO_B_16,itoa(vin*100,buffer,10),ALIGN_RIGHT);
+  DOG.string(0,2,DENSE_NUMBERS_8,itoa(orientationData.orientation.x,buffer,10),ALIGN_CENTER,STYLE_FULL);
+  if(counter>10)
+  {
+    DOG.string(0,3,DENSE_NUMBERS_8,itoa(heading_soll,buffer,10),ALIGN_CENTER,STYLE_FULL);
+    DOG.string(0,3,DENSE_NUMBERS_8,itoa((heading_offset*10),buffer,10),ALIGN_LEFT);
+  }
+  DOG.string(0,3,DENSE_NUMBERS_8,itoa(counter,buffer,10),ALIGN_RIGHT);
+  DOG.string(0,2,DENSE_NUMBERS_8,itoa(emergencystop,buffer,10),ALIGN_LEFT);
+  DOG.string(0,2,DENSE_NUMBERS_8,itoa(vin*100,buffer,10),ALIGN_RIGHT);
+  const int circle1_x=16;
+  const int circle1_y=16;
+  const int circle1_radius=15;
+  float degree1=heading_offset;
+
+  if(degree1<0.0) degree1+=360;
+
+  float diff1_x=(circle1_radius-1)*sin(degree1*DEG_TO_RAD);
+  float diff1_y=(circle1_radius-1)*cos(degree1*DEG_TO_RAD);
+
+  DOG.clearCanvas();
+  DOG.drawCircle(circle1_x, circle1_y, circle1_radius, false);
+  DOG.drawArrow(circle1_x, circle1_y, circle1_x+diff1_x, circle1_y-diff1_y);
+  DOG.flushCanvas();
   
 }
