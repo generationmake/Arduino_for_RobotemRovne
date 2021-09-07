@@ -43,7 +43,7 @@ void setup() {
   digitalWrite(BACKLIGHTPIN,  HIGH);  // enable backlight pin
 
   DOG.begin(DIS_CS,0,0,DIS_A0,DIS_RESET,DOGM128);   //CS = 15, 0,0= use Hardware SPI, A0 = 17, RESET = 16, EA DOGM128-5 (=128x64 dots)
-  DOG.createCanvas(32, 32, 0, 32, 1);  // Canvas in buffered mode
+  DOG.createCanvas(32, 32, 48, 4, 1);  // Canvas in buffered mode
 
   DOG.clear();  //clear whole display
    Wire.begin();
