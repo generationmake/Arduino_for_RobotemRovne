@@ -10,7 +10,7 @@ Arduino code for Robotem Rovne
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include "ifx007t.h"
- 
+
 Adafruit_ADS1015 ads1015;    // Construct an ads1015 at the default address: 0x48
 Ifx007t mot1;
 Ifx007t mot2;
@@ -48,15 +48,15 @@ void setup() {
   DOG.clear();  //clear whole display
    Wire.begin();
   DOG.string(0,0,UBUNTUMONO_B_16,"Scan I2C-Bus",ALIGN_CENTER);
- 
+
   Serial.begin(9600);
 //  while (!Serial);             // Leonardo: wait for serial monitor
   Serial.println("\nI2C Scanner");
   byte error, address;
   int nDevices;
- 
+
   Serial.println("Scanning...");
- 
+
   nDevices = 0;
   for(address = 1; address < 127; address++ )
   {
@@ -65,7 +65,7 @@ void setup() {
     // a device did acknowledge to the address.
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
- 
+
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x");
@@ -73,7 +73,7 @@ void setup() {
         Serial.print("0");
       Serial.print(address,HEX);
       Serial.println("  !");
- 
+
       nDevices++;
     }
     else if (error==4)
@@ -82,13 +82,13 @@ void setup() {
       if (address<16)
         Serial.print("0");
       Serial.println(address,HEX);
-    }    
+    }
   }
   if (nDevices == 0)
     Serial.println("No I2C devices found\n");
   else
     Serial.println("done\n");
- 
+
   delay(500);           // wait 0.5 seconds for next scan
 
   DOG.string(0,2,UBUNTUMONO_B_16,"Init BNO055",ALIGN_CENTER);
@@ -142,7 +142,7 @@ void loop() {
   vin=(float)adc/1024.0*3.3*16;
 
   if(counter<1000) counter++;
-  if(emergencystop==0) 
+  if(emergencystop==0)
   {
     counter=0;
     heading_soll=0;
@@ -154,14 +154,14 @@ void loop() {
     pwm=50;
     heading_soll+=orientationData.orientation.x;
   }
-  if(counter==10) 
+  if(counter==10)
   {
     heading_soll=heading_soll/10.0;
   }
   if(counter>10)
   {
 //    pwm++;
-    if(pwm<150) 
+    if(pwm<150)
     {
       pwm+=5;
       mot1.pwm(pwm);
@@ -191,7 +191,7 @@ void loop() {
     mot2.pwm(pwm);
   }
   if(counter>1024)counter=0;
-*/  
+*/
 //  delay(1000);
   delay(100);  // wait a little bit
 
@@ -239,5 +239,5 @@ void loop() {
   DOG.drawCircle(circle1_x, circle1_y, circle1_radius, false);
   DOG.drawArrow(circle1_x, circle1_y, circle1_x+diff1_x, circle1_y-diff1_y);
   DOG.flushCanvas();
-  
+
 }
