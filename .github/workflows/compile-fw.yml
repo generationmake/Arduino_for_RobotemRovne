@@ -24,9 +24,9 @@ jobs:
       matrix:
         board:
           - fqbn: arduino:samd:mkrwifi1010
-!            platforms: |
-!              - name: rp2040:rp2040
-!                source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+#            platforms: |
+#              - name: rp2040:rp2040
+#                source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
 
     steps:
