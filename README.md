@@ -29,14 +29,14 @@ Arduino Code for Robotem Rovne Contest.
 | 14      | 5            | HighPowerMotorFeatherWing | MOT2_2        | pwm for motor 2                                 |
 | 15      | 6            | ArduHMIShield             | DIS_CS        | chip select for display                         |
 | 16      | 7            |                           |               |                                                 |
-| 17      | 8/MOSI       | serveral                  | SPI_MOSI      | SPI for display                                 |
-| 18      | 9/SCK        | serveral                  | SPI_SCK       | SPI for display                                 |
-| 19      | 10/MISO      | serveral                  | SPI_MISO      | SPI for display                                 |
-| 20      | 11/SDA       | serveral                  | I2C_SDA       | I2C for BNO                                     |
-| 21      | 12/SCL       | serveral                  | I2C_SCL       | I2C for BNO                                     |
+| 17      | 8/MOSI       | several                   | SPI_MOSI      | SPI for display                                 |
+| 18      | 9/SCK        | several                   | SPI_SCK       | SPI for display                                 |
+| 19      | 10/MISO      | several                   | SPI_MISO      | SPI for display                                 |
+| 20      | 11/SDA       | several                   | I2C_SDA       | I2C for BNO                                     |
+| 21      | 12/SCL       | several                   | I2C_SCL       | I2C for BNO                                     |
 | 22      | 13/RX        | reserved                  | SERIAL_RX     | reserved for GPS                                |
 | 23      | 14/TX        | reserved                  | SERIAL_TX     | reserved for GPS                                |
-| 24      | RESET        | serveral                  | RESET         | Reset for BNO                                   |
+| 24      | RESET        | several                   | RESET         | Reset for BNO                                   |
 | 25      | GND          | all                       | GND           | common ground for all boards                    |
 | 26      | VCC          | all                       | 3V3-rail      | supply voltage for all boards                   |
 | 27      | VIN          | HighPowerMotorFeatherWing | 5V-rail       | output of voltage generator, supply for Arduino |
