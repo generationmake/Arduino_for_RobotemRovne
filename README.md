@@ -41,4 +41,3 @@ Arduino Code for Robotem Rovne Contest.
 | 26      | VCC          | all                       | 3V3-rail      | supply voltage for all boards                   |
 | 27      | VIN          | HighPowerMotorFeatherWing | 5V-rail       | output of voltage generator, supply for Arduino |
 | 28      | 5V0          |                           |               |                                                 |
-
